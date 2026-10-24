@@ -229,7 +229,7 @@ const renderer = new THREE.WebGLRenderer({
   antialias: true,
   alpha: false
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -243,7 +243,7 @@ scene.add(new THREE.HemisphereLight(0xfff1f7, 0xb56b87, 2.2));
 const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
 keyLight.position.set(-5, 10, 7);
 keyLight.castShadow = true;
-keyLight.shadow.mapSize.set(2048, 2048);
+keyLight.shadow.mapSize.set(1024, 1024);
 keyLight.shadow.camera.left = -12;
 keyLight.shadow.camera.right = 12;
 keyLight.shadow.camera.top = 12;
@@ -309,23 +309,25 @@ function cylinder(radiusTop, radiusBottom, height, material, x, y, z,
   return mesh;
 }
 
+const sharedSphereGeometry = new THREE.SphereGeometry(1, 24, 16);
+
 function sphere(x, y, z, sx, sy, sz, material, parent = cake) {
   const mesh = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 32, 24),
+    sharedSphereGeometry,
     material
   );
 
   mesh.position.set(x, y, z);
   mesh.scale.set(sx, sy, sz);
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
   parent.add(mesh);
   return mesh;
 }
 
 function torus(radius, tube, x, y, z, material, rx = Math.PI / 2) {
   const mesh = new THREE.Mesh(
-    new THREE.TorusGeometry(radius, tube, 12, 96),
+    new THREE.TorusGeometry(radius, tube, 10, 64),
     material
   );
 
@@ -1107,7 +1109,7 @@ animate();
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   layoutScene();
 });
 </script>
