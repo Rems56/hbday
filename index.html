@@ -1,0 +1,652 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>For My Love ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Sacramento&display=swap');
+:root{--pink:#e9a0ad;--rose:#d7798b;--ink:#55464b;--muted:#b8a6a8}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:'DM Sans',sans-serif;background:#090713;overflow-x:hidden}
+#flower-bg{position:fixed;inset:0;width:100%;height:100%;z-index:-2;display:block}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(8,7,20,.35),rgba(8,4,16,.10) 55%,rgba(8,4,16,.40));pointer-events:none}
+#petals{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
+.petal-float{position:absolute;top:-30px;animation:falling linear forwards;opacity:.7}
+@keyframes falling{0%{transform:translate3d(0,-10px,0) rotate(0);opacity:0}10%{opacity:.7}100%{transform:translate3d(var(--drift),110vh,0) rotate(500deg);opacity:0}}
+.topbar{height:45px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #ffffff25;background:#100b1bbd;backdrop-filter:blur(10px);color:#f0dbe1;font-size:10px;letter-spacing:2.5px;position:relative;z-index:3}
+.topbar button{position:absolute;right:15px;border:1px solid #ffffff35;background:#ffffff10;color:#ffe8ef;border-radius:50%;width:30px;height:30px;cursor:pointer}
+main{width:100%;position:relative;z-index:1}
+.page{display:none;width:min(100% - 28px,620px);min-height:calc(100vh - 70px);margin:auto;padding:40px 0 32px;flex-direction:column;align-items:center;text-align:center;animation:appear .55s ease both}
+.page.active{display:flex}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{text-transform:uppercase;letter-spacing:2.5px;color:#f1c2cf;font-size:10px;margin-bottom:13px}
+h1,h2{font-family:'Playfair Display',serif;font-weight:500}
+h1{font-size:clamp(34px,8vw,49px);margin:0 0 5px;color:#fff5f8;text-shadow:0 2px 18px #000}
+h1 span{color:#ffb6c8}
+h2{font-size:clamp(25px,6vw,34px);line-height:1.25;margin:0 0 10px;color:#fff7f8}
+.script{font-family:'Sacramento',cursive;color:#ffc0ce;font-size:28px}
+.small{color:#f1dfe3;font-size:12px;line-height:1.8;text-shadow:0 1px 7px #000}
+button{font-family:inherit}
+button:focus-visible{outline:2px solid #ffc4d1;outline-offset:4px}
+.primary,.secondary{border-radius:30px;padding:11px 21px;font-size:12px;cursor:pointer;transition:.2s}
+.primary{border:1px solid #ffd1db;background:linear-gradient(135deg,#e6a1af,#c96b82);color:white;box-shadow:0 5px 18px #d7798b35}
+.primary:hover{transform:translateY(-2px)}
+.secondary{background:#ffffff15;color:#fff0f4;border:1px solid #ffffff55}
+.dots{display:flex;gap:7px;margin-top:25px}
+.dots span{width:5px;height:5px;border-radius:50%;background:#ffffff60}
+.dots .current{width:17px;border-radius:10px;background:#ffc0ce}
+.bear{font-size:46px;margin:4px 0}
+
+/* Changeable birthday GIF */
+.birthday-gif{width:120px;height:100px;object-fit:contain;display:block;margin:4px auto 12px}
+
+.envelope-wrap{width:min(100%,340px);margin:25px auto 15px;perspective:900px}
+.envelope{height:170px;position:relative;cursor:pointer;filter:drop-shadow(0 9px 13px #0006)}
+.env-back{position:absolute;inset:0;background:#ead8c6;border-radius:4px;border:1px solid #b9a18d}
+.env-paper{position:absolute;top:12px;left:8%;width:84%;height:88%;background:#fffdf9;transition:transform .8s;z-index:1}
+.env-paper:before{content:'A little surprise for you ♡';font-family:'Sacramento',cursive;color:#c87f90;font-size:22px;position:absolute;top:28px;left:0;width:100%}
+.env-left,.env-right,.env-bottom,.env-flap{position:absolute;inset:0;pointer-events:none}
+.env-left{background:#f0e0d0;clip-path:polygon(0 0,51% 52%,0 100%);z-index:2}
+.env-right{background:#f4e5d7;clip-path:polygon(100% 0,49% 52%,100% 100%);z-index:2}
+.env-bottom{background:#e7d2bd;clip-path:polygon(0 100%,50% 46%,100% 100%);z-index:3}
+.env-flap{background:#f6e7d7;clip-path:polygon(0 0,100% 0,50% 57%);transform-origin:top;transition:transform .7s,opacity .3s;z-index:4}
+.seal{position:absolute;z-index:5;left:50%;top:51%;transform:translate(-50%,-50%);width:39px;height:39px;border-radius:50%;background:#bc526b;color:#ffe4e9;display:grid;place-items:center;border:2px solid #e4a2ac;transition:opacity .25s}
+.envelope.open .env-flap{transform:rotateX(180deg);opacity:0}
+.envelope.open .seal{opacity:0}
+.envelope.open .env-paper{transform:translateY(-85px);z-index:3}
+.tap-note{font-size:10px;letter-spacing:1.5px;color:#f2d9df}
+
+.card{background:#fffaf8f2;border:1px solid #fff2ef;border-radius:13px;box-shadow:0 10px 32px #0004;padding:28px clamp(18px,5vw,40px);width:100%;margin-top:8px;color:#5d4b50}
+.card h2{color:#7b505b}
+.card .eyebrow{color:#b58a94}
+.card .small{color:#927e82;text-shadow:none}
+.letter-text{font-size:12px;line-height:2;color:#806d72;white-space:pre-line;text-align:center}
+.signature{font-family:'Sacramento',cursive;color:#c9798b;font-size:25px;margin-top:12px}
+.album-controls{display:flex;justify-content:center;gap:10px;margin-top:8px}
+.wishes{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:22px 0}
+.wish-card{background:#fffaf8f2;border:1px solid #fff;border-radius:10px;min-height:165px;padding:13px 8px;box-shadow:0 5px 15px #0003;cursor:pointer;transition:transform .25s;color:#72535c}
+.wish-card:hover{transform:translateY(-4px)}
+.wish-flower{height:58px;display:grid;place-items:center;font-size:35px}.wish-flower img{max-width:58px;max-height:58px;width:auto;height:auto;object-fit:contain}.bear-media{width:76px;height:76px;object-fit:contain;margin:4px auto 12px}.final-stickers{display:flex;justify-content:center;align-items:center;gap:12px;margin:0 auto 10px}.final-stickers img{width:64px;height:64px;object-fit:contain}
+.wish-title{font-family:'Playfair Display',serif;font-size:13px;margin:7px 0}
+.wish-caption{color:#a38b91;font-size:10px;line-height:1.6}
+.wish-detail{display:none;margin-top:10px;color:#b56d80;font-size:11px;line-height:1.6}
+.wish-card.expanded .wish-detail{display:block}
+.bouquet-photos{display:flex;justify-content:center;align-items:center;gap:12px;width:100%;margin:8px auto 15px;flex-wrap:wrap}
+.bouquet-photo{display:block;width:min(150px,42vw);height:150px;object-fit:contain;margin:0;border-radius:10px;}
+.final-card{text-align:left}
+.final-card h2,.final-card .bear{text-align:center}
+.final-card .letter-text{text-align:left}
+.final-card .signature{text-align:right}
+.footer-note{color:#f1dfe3;font-size:10px;margin-top:18px}
+/* Tablet and phone support */
+html,body{width:100%;min-width:0;min-height:100%;-webkit-text-size-adjust:100%;}
+button,.envelope,.wish-card,.upload-button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.page{width:min(calc(100% - 32px),620px);min-height:calc(100vh - 45px);min-height:calc(100dvh - 45px);padding-left:0;padding-right:0}
+.card,.final-card{max-width:100%;overflow-wrap:anywhere}
+.bouquet-photo{width:min(150px,42vw);height:150px;max-width:100%;max-height:180px;object-fit:contain}
+#cakeFrame{height:100vh;height:100dvh;}
+@media (min-width:600px) and (max-width:1024px){
+  .page{width:min(calc(100% - 56px),700px);padding-top:clamp(28px,5vh,48px)}
+  .wishes{gap:12px}
+  .wish-card{padding:16px 10px;min-height:150px}
+  .card{padding:clamp(24px,4vw,38px)}
+  .bouquet-photo{width:min(180px,35vw);max-height:200px}
+}
+@media (max-width:600px){
+  .topbar{height:42px;font-size:9px;letter-spacing:1.5px;padding:0 48px 0 10px}
+  .topbar button{right:9px;width:32px;height:32px}
+  .page{width:calc(100% - 28px);padding-top:24px;padding-bottom:28px;min-height:calc(100dvh - 42px)}
+  h1{font-size:clamp(30px,9vw,44px);overflow-wrap:anywhere}
+  h2{font-size:clamp(23px,6.5vw,31px)}
+  .small{font-size:12px;line-height:1.75}
+  .primary,.secondary{min-height:42px;padding:11px 17px;font-size:12px;max-width:100%;white-space:normal}
+  .wishes{grid-template-columns:1fr;gap:10px;margin:16px 0}
+  .wish-card{min-height:0;padding:14px 12px}
+  .wish-flower{height:44px;font-size:30px}
+  .wish-title{font-size:14px}
+  .wish-caption,.wish-detail{font-size:11px}
+  .card{padding:22px 16px;border-radius:12px}
+  .letter-text{font-size:12px;line-height:1.85}
+  .envelope-wrap{width:min(100%,320px)}
+  .album-controls{flex-wrap:wrap;gap:8px}
+}
+@media (max-width:380px){
+  .page{width:calc(100% - 22px)}
+  .eyebrow{font-size:9px;letter-spacing:1.7px}
+  .card{padding:19px 13px}
+  .primary,.secondary{padding:10px 13px}
+}
+
+@media(max-width:430px){
+  .page{padding-top:28px}
+  .envelope-wrap{margin-top:23px}
+  .envelope{height:150px}
+  .wishes{gap:6px}
+  .wish-card{padding:12px 5px}
+  .wish-title{font-size:12px}
+  .wish-caption{font-size:9px}
+  .card{padding:24px 17px}
+}
+</style>
+</head>
+<body>
+<canvas id="flower-bg"></canvas>
+<div id="petals"></div>
+<header class="topbar"> HAPPY BIRHTDAY BABY HAZEL KOOO EHE <button id="musicButton" aria-label="Play or pause birthday music" title="Play/pause birthday music">♫</button></header>
+<!-- FIRST PART MUSIC: put your song in a music folder beside this HTML file and edit the path below. -->
+<audio id="firstPartMusic" loop preload="auto" autoplay></audio>
+
+<main>
+<section class="page active" id="page1">
+  <div class="eyebrow">For my babababababyy hazellll Mwaaaa</div>
+  <h1>Haii Hazel <span id="nameTop">Cutiee</span></h1>
+  <div class="script">happy birthday babyyy ♡</div>
+  <img class="birthday-gif bear-media" src="clapcat.webp" alt="Birthday sticker">
+  <p class="small">For my birthday girlll ehehehe loveu.</p>.<br>Tigil Na natin to if di ka naiyak. IMI lng po</p>
+  <div class="envelope-wrap">
+    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open birthday envelope">
+      <div class="env-back"></div>
+      <div class="env-paper"></div>
+      <div class="env-left"></div>
+      <div class="env-right"></div>
+      <div class="env-bottom"></div>
+      <div class="env-flap"></div>
+      <div class="seal">♥</div>
+    </div>
+  </div>
+  <div class="tap-note" id="tapNote">TAP THE ENVELOPE TO OPEN ♡</div>
+  <div style="margin-top:20px"><button class="primary" onclick="goTo(2)">Open mo buseng ♡</button></div>
+  <div class="dots"><span class="current"></span><span></span><span></span><span></span></div>
+</section>
+
+<section class="page" id="page2">
+  <div class="card">
+    <!-- Add your GIF by changing the src below to its file path, direct image URL, or data URL. -->
+    <!-- Example: src="gifs/my-birthday.gif" (keep the GIF in a folder named gifs beside this HTML file). -->
+    <img id="birthdayGif" class="birthday-gif" src="200.webp" alt="Birthday GIF">
+    <div class="eyebrow">a special day for my hazell hihi</div>
+    <h2>Happy Birthday</h2>
+    <div class="script" id="letterName">My Love ♡</div>
+    <p class="letter-text">Today is all about you, and I hope you know just how special you are. You deserve all the beautiful things this world has to offer, all the happiness your heart can hold, and lahattttttttttt ng pagmamahal kooo hehe de eme, sino kaba?
+
+mag titira ako para sa sarili ko noh, mamaya ma-buy bust ka pano naman ako diba bleee. I wish I could be there to celebrate beside you, see your smile, and make this day even more memorable. For now, I hope this little corner of the internet can make you feel loved:>
+
+Happy birthday lalaloveee, my favorite person. May this new chapter bring you countless reasons to smile. You deserve nothing less MWAAAAAAAAAAAAAA.</p>
+    <div class="signature">with all my love, ♡</div>
+  </div>
+  <div style="margin-top:24px"><button class="primary" onclick="goTo(4)">There's more for you →</button></div>
+  <div class="dots"><span></span><span class="current"></span><span></span><span></span></div>
+</section>
+
+
+<section class="page" id="page4">
+  <div class="eyebrow">My wishes for you babyyy, just for you</div>
+  <h2>I made this for you, 20pieces of tulips for 20 years of existence ehe.</h2>
+  <p class="small">Tap each flashcard babyyyyy ♡</p>
+  <div class="wishes">
+    <article class="wish-card" onclick="toggleWish(this)">
+      <div class="wish-flower"><img src="happy.webp" alt="Happiness sticker"></div>
+      <div class="wish-title">Happiness</div>
+      <div class="wish-caption">Para di ka lagi depress sa quiz at exams baby ehehe</div>
+      <div class="wish-detail">May you find at least happiness sa maliliit na wins, bagay babyyy. You shoudln't let little things be the reason for ruining your dayyy. Sabihin mo sakin yung ng a-away sayo ah, bugbogin natin HAHAHAHA.</div>
+    </article>
+    <article class="wish-card" onclick="toggleWish(this)">
+      <div class="wish-flower"><img src="rich.webp" alt="Success sticker"></div>
+      <div class="wish-title">Success</div>
+      <div class="wish-caption">for every dream you hold</div>
+      <div class="wish-detail">May you find courage for every challenge and opportunities that bring you closer to your dreams. Pag may humadlang itumba natin. HAHAHAHA. But on a serious note, There would be a time na parang ang hirap lampasan, but dont let it stop you ket ano pa yan, kamitin mo yang pangarap mo. Im here to cheer you onn alwaysss MWAAAAAAAAAAAA</div>
+    </article>
+    <article class="wish-card" onclick="toggleWish(this)">
+      <div class="wish-flower"><img src="fat.webp" alt="Love sticker"></div>
+      <div class="wish-title">Health</div>
+      <div class="wish-caption">today and every day</div>
+      <div class="wish-detail">May you have a healthy body and health baby, take care of yourself always ha?. Huwag kang magpalipas ng gutom lagi, eat at the right timeee, bawasan ang caffeine haa? ika nga nila, lahat ng sobra ayyyyyyyy? Masama haaa? Kaya ayusin mo kotongan kita eh, Mwaaaaaaaaaaa loveyouuu.</div>
+    </article>
+  </div>
+  <!-- CHANGE THIS PATH to the photo you want to show here. -->
+  <div class="bouquet-photos">
+    <img class="bouquet-photo" src="flower1.png" alt="A special photo for you">
+    <img class="bouquet-photo" src="flower2.png" alt="Another special photo for you">
+  </div>
+  <p class="small">Three wishes for you today, and a thousand more for the years ahead.</p>
+  <button class="primary" onclick="goTo(5)">One last thing, my love ♡</button>
+  <div class="dots"><span></span><span></span><span class="current"></span></div>
+</section>
+
+<section class="page" id="page5">
+  <div class="card final-card">
+    <div class="final-stickers"><img src="meow.webp" alt="Bear sticker"><img src="kiss.webp" alt="Love letter sticker"></div>
+    <div class="eyebrow">a letter from your tamtammm</div>
+    <h2>Happy birthday BABYYYYY.</h2>
+    <div class="script" id="finalName">My Hazel ♡</div>
+    <p class="letter-text">HAPPPPPPPYYYYYYYYY BBBIIIRTTTHHHHHDAAAYYY HAZELLLL!!    my babyyyy, my loveee, my langgaaaa, tottt HAHAHAHAHA. It’s your day todayyyyy 
+      kaso di ka parin makakatakas sa exams and quizes mo HAHAHAHA bleee. Ayon pano ba yan? Tanda mo naaa expired kana, yuck pass sa 20 years old. De eme lang, kahit 69 years old kapa... di mo naman ako papatulan non. 
+      (reacted  to your message) HAHAHAHAHAHA tantadooo. De, u my pretty hazelll, yung gandaganda hazel koooo eheheheh cuteee paaa, legit no lies, you're the apple of my eye. BOOM BARS ewan ko na lang kung hindi ka mapa-rub 
+      jan HAHAHAHAHAHAAH GAGO sinisingit talaga mga ganyan eh. 
+      
+      Pero anyway, ayonnnn more birthdays to comeee I hope kasama ako sa mga susunod mong birthdays at akin ehe. I wish you all the best that life can offerrr. Makamit mo sana mga pinapangarap mo para sugar mommy kita HAHAHAHA totttt. 
+      Mommy pa rin naman kita anyway eh HAHAHAHAHA. I'm always here rooting? Ano bayon rotting? HAHAHAHAHA de, I'm always here, cheering you on sa lahat ng mga endeavours mo, patawow englis. Pero seryosoo, dito lang ako whenever you need someone to 
+      lean on ha? When things get hardddd uwi ka lang sakin haaaa?? Dito mi lagi para sayo:> I’ll listen sa lahat ng mga kwento moo, your problems, your worries, and even the little things that happened throughout your day haa? Mag iingat ka palagi haaa? 
+      alagaan mo sarili mo jan kasi may pagka-pasaway ka rin ih, layo mo kasi edi sana na kokotongan kita kada pasaway mo HAHAHAHAHAHA pero ayonn, im trying my best naman to take care of you kahit papanoooo sana ramdam mo yon hehehe. Soo, 
+      ayon I hope you always try to be the best version of yourself, para rin sayo yan, sa future mooo ha? Kaya don't give up, okay? Always push through hard timessss lalo na sa studiesss mo ha? Mmmwaaaaaaaaa iloveyouuuu. 
+
+      Andddd yeahhh, I’m sorry agad if I can't be there in person for your birthday haaa? Ihhh, alam naman natin kung whyy pero ayon, i just feel bad and sadddd kasi hindi kita kapiling hahaha. Bawi ako sa sunod na birthdays mo malay mo next yearrr eheeee. 
+      Wala me gift, ayaw mo man bigay address mo ih, kaya ito na lang at flowers na ginawa koooooo, medj di perfect ihhh sorry agad i tried my besssttt huhuhu, yung tutorial na pinanood ko bini-basic lang eh kaya kala ko madali HAHAHAHAHAHA ayon napaso sa 
+      glue stick inang yannn. 20 pieces of tulipsss because you're 20 naaa (oo na di ka parin 20, 19 ka palang, next year ka mag 20 HAHAHAHAHAHA) sorry hindi sya naka bouquet huhuhu akala ko kasi aabot pera ko ehhh, may unexpected gastusin ehhh I knoww 
+      it's a lame ass excuse, kaya ill do better next timeeee. I wish you stay as understanding as you are now alwayssss and I can see the changes that you’re trying to change babyyy ehehe. Thank you for always making time for me kahit soooooooooobbbbranggggggggg 
+      busy moooo, tapos nowww mas lumaki yung time na binibigay mooo.. thank you hazell:> kaya sayo ako eh hehehe. I hope you enjoy this special day today, sana maka receive ka gifts kahit maliliit na bagay from your friendsss ehe. Lista mo mga names nila pag di nag bigay ha? 
+      Pagmumurahin ko sila isa-isa lejit no lies, toture ko yang mga yan HAHAHAHAHAHA. And yeahh, i hope you know na kahit minsan hindi ko masabi nang maayos lahat ng nararamdaman ko for you, you will always have a special place in my heart. you make me happy in ways na hindi 
+      ko kayang i-explain, and even the simplest moments with you become memories na gusto kong balikan palagi. i love how you can make my bad days feel a little lighter just by being there, and i hope i can do the same for you too. i know na hindi naman palaging magiging perfect ang lahat, 
+      and there might be days na we'll misunderstand each other or things won't go the way we want them to, pero i hope we always choose to understand each other instead of giving up easily. i want us to keep learning about each other, growing together, and making more memories kahit sa mga simpleng bagay lang:>
+
+      Anywayyyy yeahhh, it’s been almost 2 months na tayo, and ngl, a lot has happend and things got out of hand fastt dinnn HAHAHAHA syempre aware akooo, I'm not that oblivious sa mga actions ko no , minsan late ko lang talaga na re-realizeee hehehehe. Pero I don't regret anything or what naman. 
+      I meant everything i said naman zell. I only want you and you only:> I wanna say sorry din sa mga mali ko sayooo, alam ko namang meron ayaw mo lang say hehehe, and sa mga pagkukulang ko. Taenang yan naging sorry message na birthday mo nganiiii. HAHAHAHAHAHAHA so yeahhhh ayonn once againnn, 
+      HAPPPPYYYYY BIRTHDAYYYY BABYYYYYY     I wish you alllll the bestttt, ILOVEYOUUUUUUUUU!!!!
+Happy birthday, my babyyy. ♡</p>
+    <div class="signature">always cheering for you, love tamtamm ♡</div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:12px">
+    <button class="secondary" onclick="goTo(4)">← Back</button>
+    <button class="primary" onclick="showCake()">A little cake for you 🍰 →</button>
+  </div>
+</section>
+</main>
+
+<script>
+/* PERSONALIZE THIS */
+const CONFIG = { name: "Hazell", openingName: "Cutieee" };
+document.getElementById("nameTop").textContent = CONFIG.openingName;
+document.getElementById("letterName").textContent = "My " + CONFIG.name + " ♡";
+document.getElementById("finalName").textContent = "My " + CONFIG.name + " ♡";
+
+/* FLOWER-FIELD BACKGROUND RECREATION */
+const canvas = document.getElementById("flower-bg");
+const ctx = canvas.getContext("2d");
+let W=0,H=0,DPR=1,clock=0,blossoms=[],grass=[],specks=[];
+const rand=(a,b)=>a+Math.random()*(b-a);
+
+function resizeCanvas(){
+  W=innerWidth;
+  H=innerHeight;
+  DPR=Math.min(devicePixelRatio||1,2);
+  canvas.width=W*DPR;
+  canvas.height=H*DPR;
+  canvas.style.width=W+"px";
+  canvas.style.height=H+"px";
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  createFlowers();
+}
+
+function createFlowers(){
+  blossoms=[];
+  grass=[];
+  specks=[];
+  const count=Math.max(65,Math.floor(W/8));
+
+  for(let i=0;i<count;i++){
+    const x=rand(-15,W+15);
+    const base=rand(H*.78,H*1.04);
+    const depth=rand(.35,1);
+    blossoms.push({
+      x,base,depth,size:rand(5,13)*depth+2,
+      stem:rand(H*.08,H*.30)*depth,
+      phase:rand(0,6.28),
+      color:Math.floor(rand(0,6)),
+      bloom:rand(.2,1),
+      delay:rand(0,2.8)
+    });
+  }
+
+  for(let i=0;i<Math.max(18,Math.floor(W/28));i++){
+    blossoms.push({
+      x:rand(-10,W+10),
+      base:rand(H*.91,H*1.06),
+      depth:rand(.85,1.45),
+      size:rand(10,19),
+      stem:rand(H*.16,H*.39),
+      phase:rand(0,6.28),
+      color:Math.floor(rand(0,6)),
+      bloom:rand(.65,1),
+      delay:rand(0,2)
+    });
+  }
+
+  for(let i=0;i<Math.floor(W/3);i++){
+    grass.push({
+      x:rand(0,W),
+      y:rand(H*.82,H*1.03),
+      h:rand(12,85),
+      phase:rand(0,6.28),
+      width:rand(.5,1.6)
+    });
+  }
+
+  for(let i=0;i<100;i++){
+    specks.push({
+      x:rand(0,W),
+      y:rand(0,H),
+      r:rand(.4,1.5),
+      p:rand(0,6.28)
+    });
+  }
+}
+
+const palettes=[
+  ["#ffe0a0","#ffb94d","#ee762d"],
+  ["#ffd2dc","#ff8eb3","#d84f83"],
+  ["#fff1b2","#f7d84c","#df9e24"],
+  ["#e8d7ff","#b99aff","#8061d5"],
+  ["#ffdbd0","#ff8d73","#d94d61"],
+  ["#fff3e5","#fffdf5","#eab8c9"]
+];
+
+function flowerPetal(x,y,len,w,angle,colors,alpha){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(angle);
+  ctx.globalAlpha=alpha;
+
+  const g=ctx.createLinearGradient(0,-len,0,2);
+  g.addColorStop(0,colors[0]);
+  g.addColorStop(.55,colors[1]);
+  g.addColorStop(1,colors[2]);
+
+  ctx.fillStyle=g;
+  ctx.shadowColor=colors[1];
+  ctx.shadowBlur=5;
+  ctx.beginPath();
+  ctx.ellipse(0,-len*.48,w*.5,len*.55,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawBlossom(f){
+  const sway=Math.sin(clock*1.15+f.phase)*4*f.depth;
+  const x=f.x+sway;
+  const top=f.base-f.stem;
+
+  ctx.save();
+  ctx.globalAlpha=Math.min(1,f.depth);
+
+  // Stem
+  ctx.strokeStyle="#477c48";
+  ctx.lineWidth=Math.max(.8,f.depth*1.25);
+  ctx.beginPath();
+  ctx.moveTo(f.x,f.base);
+  ctx.quadraticCurveTo(f.x+sway*.4,top+f.stem*.4,x,top+f.size*.2);
+  ctx.stroke();
+
+  // Pointed tulip leaves
+  for(let j=0;j<2;j++){
+    const yy=f.base-f.stem*(.33+j*.25);
+    const side=j%2?1:-1;
+    ctx.save();
+    ctx.translate(f.x+sway*.35,yy);
+    ctx.rotate(side*.43);
+    ctx.fillStyle=j%2?"#52894c":"#376e43";
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.quadraticCurveTo(side*f.size*.55,-f.size*1.6,side*f.size*1.25,-f.size*2.6);
+    ctx.quadraticCurveTo(side*f.size*1.3,-f.size*.75,0,0);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  const colors=palettes[f.color];
+  const bloom=Math.min(1,Math.max(0,(clock-f.delay)*.7));
+  ctx.translate(x,top);
+  ctx.scale(.1+.9*bloom,.1+.9*bloom);
+
+  const w=f.size*.78;
+  const h=f.size*1.5;
+
+  ctx.shadowColor=colors[1];
+  ctx.shadowBlur=7;
+
+  const g=ctx.createLinearGradient(-w,-h,w,h*.4);
+  g.addColorStop(0,colors[0]);
+  g.addColorStop(.5,colors[1]);
+  g.addColorStop(1,colors[2]);
+  ctx.fillStyle=g;
+
+  // Cup-shaped tulip bloom
+  ctx.beginPath();
+  ctx.moveTo(-w*.82,h*.25);
+  ctx.bezierCurveTo(-w*1.05,-h*.15,-w*.95,-h*.72,-w*.62,-h*.92);
+  ctx.bezierCurveTo(-w*.35,-h*1.08,-w*.18,-h*.62,0,-h*.66);
+  ctx.bezierCurveTo(w*.22,-h*1.04,w*.42,-h*1.02,w*.65,-h*.82);
+  ctx.bezierCurveTo(w*1.02,-h*.5,w*.98,-h*.08,w*.82,h*.25);
+  ctx.bezierCurveTo(w*.55,h*.62,-w*.55,h*.62,-w*.82,h*.25);
+  ctx.closePath();
+  ctx.fill();
+
+  // Central petal highlight
+  ctx.shadowBlur=0;
+  ctx.globalAlpha=Math.min(1,f.depth)*.48;
+  ctx.strokeStyle=colors[0];
+  ctx.lineWidth=Math.max(.8,f.size*.09);
+  ctx.lineCap="round";
+  ctx.beginPath();
+  ctx.moveTo(0,h*.28);
+  ctx.bezierCurveTo(-w*.12,-h*.05,w*.04,-h*.5,0,-h*.76);
+  ctx.stroke();
+
+  // Tiny warm center glint
+  ctx.globalAlpha=Math.min(1,f.depth)*.7;
+  ctx.fillStyle="#ffe8a8";
+  ctx.beginPath();
+  ctx.ellipse(0,h*.14,Math.max(1,f.size*.12),Math.max(1,f.size*.08),0,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawBackground(){
+  const bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,"#080713");
+  bg.addColorStop(.55,"#130d20");
+  bg.addColorStop(1,"#172018");
+  ctx.fillStyle=bg;
+  ctx.fillRect(0,0,W,H);
+
+  const glow=ctx.createRadialGradient(W*.5,H*.68,0,W*.5,H*.68,H*.65);
+  glow.addColorStop(0,"#61344b55");
+  glow.addColorStop(1,"#130d2000");
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,W,H);
+
+  specks.forEach(s=>{
+    ctx.globalAlpha=.15+.25*(Math.sin(clock*1.3+s.p)+1)/2;
+    ctx.fillStyle="#ffe3b2";
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,6.28);
+    ctx.fill();
+  });
+  ctx.globalAlpha=1;
+
+  grass.forEach(g=>{
+    const lean=Math.sin(clock*1.1+g.phase)*8;
+    ctx.strokeStyle="#477748";
+    ctx.lineWidth=g.width;
+    ctx.beginPath();
+    ctx.moveTo(g.x,H+2);
+    ctx.quadraticCurveTo(g.x+lean,H-g.h*.5,g.x+lean*.7,H-g.h);
+    ctx.stroke();
+  });
+}
+
+function animateFlowers(){
+  clock+=1/60;
+  drawBackground();
+  blossoms.sort((a,b)=>a.depth-b.depth).forEach(drawBlossom);
+  requestAnimationFrame(animateFlowers);
+}
+
+addEventListener("resize",resizeCanvas);
+resizeCanvas();
+animateFlowers();
+
+/* PAGE NAVIGATION */
+function goTo(n){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page"+n).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(n===2)makePetals(12);
+}
+
+let envelopeOpened=false;
+
+function openEnvelope(){
+  if(envelopeOpened){
+    goTo(2);
+    return;
+  }
+
+  envelopeOpened=true;
+  document.getElementById("envelope").classList.add("open");
+  document.getElementById("tapNote").textContent="YOUR LITTLE LETTER IS READY ♡";
+  makePetals(18);
+  setTimeout(()=>goTo(2),1000);
+}
+
+document.getElementById("envelope").addEventListener("click",openEnvelope);
+
+document.getElementById("envelope").addEventListener("keydown",e=>{
+  if(e.key==="Enter"||e.key===" "){
+    e.preventDefault();
+    openEnvelope();
+  }
+});
+
+/* BIRTHDAY WISHES */
+function toggleWish(card){
+  card.classList.toggle("expanded");
+}
+
+/* FLOATING PETALS */
+function makePetals(n=8){
+  const container=document.getElementById("petals");
+  const symbols=["🌸","♡","✿","♥"];
+
+  for(let i=0;i<n;i++){
+    setTimeout(()=>{
+      const el=document.createElement("span");
+      el.className="petal-float";
+      el.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+      el.style.left=Math.random()*100+"%";
+      el.style.fontSize=(12+Math.random()*12)+"px";
+      el.style.animationDuration=(5+Math.random()*5)+"s";
+      el.style.setProperty("--drift",(Math.random()*150-75)+"px");
+
+      container.appendChild(el);
+      setTimeout(()=>el.remove(),11000);
+    },i*90);
+  }
+}
+
+/* FIRST PART MUSIC — edit this path to your own song. */
+const FIRST_PART_MUSIC = 'Mahal Magmahal.mp3';
+const firstPartMusic = document.getElementById('firstPartMusic');
+firstPartMusic.src = FIRST_PART_MUSIC;
+firstPartMusic.loop = true;
+
+// Try to start the first song as soon as the page opens.
+// Browsers may block sound autoplay until the visitor interacts with the page.
+function startFirstPartMusic(){
+  if (!firstPartMusic.paused) return;
+  firstPartMusic.play().then(() => {
+    const button = document.getElementById('musicButton');
+    if (button) button.textContent = '❚❚';
+  }).catch(() => {
+    // Autoplay was blocked; retry on the visitor's first interaction.
+  });
+}
+
+window.addEventListener('load', startFirstPartMusic);
+['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
+  window.addEventListener(eventName, startFirstPartMusic, { once: true, passive: true });
+});
+
+function toggleFirstPartMusic(){
+  if (!firstPartMusic.paused) {
+    firstPartMusic.pause();
+    document.getElementById('musicButton').textContent = '♫';
+    return;
+  }
+  firstPartMusic.play().then(() => {
+    document.getElementById('musicButton').textContent = '❚❚';
+  }).catch(() => {
+    alert('Add your song at ' + FIRST_PART_MUSIC + ' or update the FIRST_PART_MUSIC path in the HTML.');
+  });
+}
+
+document.getElementById('musicButton').addEventListener('click',()=>{
+  toggleFirstPartMusic();
+  makePetals(10);
+});
+
+function celebrate(){
+  makePetals(45);
+  playChime();
+  setTimeout(()=>{
+    alert("Happy birthday, "+CONFIG.name+"! Sending you the biggest hug. ♡");
+  },150);
+}
+
+</script>
+
+<!-- Embedded cake experience: all cake HTML is stored inside this single file. -->
+<iframe id="cakeFrame" allow="autoplay" title="Birthday cake surprise" style="display:none;position:fixed;inset:0;width:100%;height:100vh;height:100dvh;border:0;z-index:99999;background:#ffdce8"></iframe>
+<script>
+// ---------- ADD YOUR CAKE PHOTOS HERE ----------
+// Put photo files in a folder named "photos" beside this HTML file, then list their paths here.
+// Example: 'photos/photo1.jpg'. You can also use a direct image URL or a data URL.
+const PRELOADED_CAKE_PHOTOS = [
+   '1.png',
+   '2.png',
+   '3.png',
+   '4.png',
+   '5.png',
+   '6.png',
+   '7.png',
+   '8.png'
+];
+
+// ---------- ADD YOUR CAKE MUSIC HERE ----------
+// Use a different song from the first part, e.g. 'music/cake-part.mp3'.
+const CAKE_MUSIC_PATH = 'roblox.mp3';
+
+window.showCake = function showCake(){
+  // Stop first-part music so the cake can use its own separate track.
+  // Keep the cake opening even if the first music element is unavailable.
+  try {
+    if (typeof firstPartMusic !== 'undefined' && firstPartMusic) firstPartMusic.pause();
+    const mainMusicButton = document.getElementById('musicButton');
+    if (mainMusicButton) mainMusicButton.textContent = '♫';
+  } catch (error) {
+    console.warn('Could not pause the first music track:', error);
+  }
+  const frame = document.getElementById('cakeFrame');
+  if (!frame) {
+    console.error('Cake frame was not found.');
+    return;
+  }
+  frame.onload = () => {
+    try {
+      frame.contentWindow.postMessage('play-cake-music', '*');
+    } catch (error) {
+      console.warn('Cake opened, but music could not start automatically:', error);
+    }
+  };
+  frame.src = 'cake.html';
+  frame.style.display = 'block';
+  frame.style.visibility = 'visible';
+  frame.style.opacity = '1';
+};
+</script>
+
+</body>
+</html>

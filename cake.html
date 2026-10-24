@@ -1,0 +1,1115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pink Cake Memories</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #ffdce8;
+  color: #8e3d60;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.left-panel {
+  position: absolute;
+  z-index: 2;
+  left: 7%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30%;
+  pointer-events: none;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #b45e80;
+  margin-bottom: 22px;
+}
+
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(45px, 6.3vw, 92px);
+  font-weight: 400;
+  line-height: .98;
+  color: #a94b70;
+  letter-spacing: -2px;
+}
+
+.subtitle {
+  margin-top: 24px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #a9637e;
+  max-width: 250px;
+}
+
+.controls {
+  pointer-events: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 28px;
+}
+
+button, .upload-button {
+  font: inherit;
+  font-size: 11px;
+  color: #984b6b;
+  border: 1px solid #e7a9c1;
+  background: rgba(255,255,255,.42);
+  border-radius: 30px;
+  padding: 11px 15px;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+button:hover, .upload-button:hover {
+  background: #fff0f6;
+  transform: translateY(-2px);
+}
+
+#photoInput {
+  display: none;
+}
+
+.hint {
+  margin-top: 17px;
+  font-size: 10px;
+  color: #bd7893;
+  line-height: 1.8;
+}
+
+.signature {
+  position: absolute;
+  left: 7%;
+  bottom: 5%;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #bf7994;
+  z-index: 2;
+}
+
+@media (max-width: 700px) {
+  .left-panel { left: 5%; top: max(14px, env(safe-area-inset-top)); transform: none; width: 90%; }
+  h1 { font-size: clamp(30px, 8vw, 50px); letter-spacing: -1px; }
+  .eyebrow { margin-bottom: 8px; font-size: 8px; letter-spacing: 3px; }
+  .subtitle { margin-top: 8px; font-size: 10px; line-height: 1.55; max-width: 230px; }
+  .controls { margin-top: 10px; gap: 6px; max-width: 100%; }
+  button, .upload-button { padding: 10px 12px; font-size: 10px; min-height: 38px; }
+  .hint { display: none; }
+  .signature { bottom: max(10px, env(safe-area-inset-bottom)); left: 5%; font-size: 8px; letter-spacing: 1px; }
+}
+@media (max-width: 430px) {
+  .left-panel { width: 94%; left: 3%; top: max(12px, env(safe-area-inset-top)); }
+  h1 { font-size: clamp(28px, 8.5vw, 38px); }
+  .subtitle { max-width: 190px; font-size: 10px; }
+  .controls { max-width: 225px; }
+  button, .upload-button { padding: 9px 10px; font-size: 9px; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .left-panel { top: 8px; left: 3%; width: 55%; }
+  h1 { font-size: clamp(25px, 6vh, 38px); }
+  .eyebrow { margin-bottom: 5px; }
+  .subtitle { margin-top: 5px; line-height: 1.35; }
+  .controls { margin-top: 6px; }
+  .signature { bottom: 8px; }
+}
+
+#cakeMusicButton{position:fixed;top:18px;right:18px;z-index:20;padding:11px 16px;border:1px solid #e7a9c1;border-radius:30px;background:rgba(255,255,255,.88);color:#984b6b;font:inherit;font-size:12px;cursor:pointer;box-shadow:0 3px 12px rgba(152,75,107,.12)}
+#cakeMusicButton:hover{background:#fff0f6}
+</style>
+</head>
+
+<body>
+<div id="scene"></div>
+<button id="cakeMusicButton" type="button">♫ Play cake music</button>
+
+<section class="left-panel">
+  <div class="eyebrow">Cake for you babyyyy I knowww you can't eat it but i hope for now this made you happy:&gt;</div>
+  <h1>Will you be my girlfriend Hazel Faith Locsin Borja?</h1>
+  <p class="subtitle">
+    HAHAHAHAHA pwede ba? blessing yarn? HAHAHAHA. De, Ill wait for your "perfect moment, timing" hehehe loveyouuuuuuu.
+  </p>
+
+  <div class="controls">
+    <label class="upload-button" for="photoInput">Add your photos</label>
+    <input id="photoInput" type="file" accept="image/*" multiple>
+    <button id="rotateBtn">Pause rotation</button>
+    <button id="resetBtn">Reset view</button>
+  </div>
+
+
+</section>
+
+<div class="signature">A SWEET LITTLE UNIVERSE ♡</div>
+
+<audio id="cakeMusic" loop preload="none"></audio>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+// ---------- CAKE MUSIC: change this path to your separate cake song ----------
+const CAKE_MUSIC_PATH = 'roblox.mp3';
+const cakeMusic = document.getElementById('cakeMusic');
+cakeMusic.src = CAKE_MUSIC_PATH;
+cakeMusic.loop = true;
+const cakeMusicButton = document.getElementById('cakeMusicButton');
+cakeMusicButton.addEventListener('click', async () => {
+  try {
+    if (cakeMusic.paused) {
+      await cakeMusic.play();
+      cakeMusicButton.textContent = '❚❚ Pause cake music';
+    } else {
+      cakeMusic.pause();
+      cakeMusicButton.textContent = '♫ Play cake music';
+    }
+  } catch (error) {
+    alert('Could not play cake music. Make sure roblox.mp3 is beside this HTML file.');
+  }
+});
+// Music starts automatically when the cake page receives the message from the main page.
+window.addEventListener('message', async (event) => {
+  if (event.data !== 'play-cake-music') return;
+  try { await cakeMusic.play(); }
+  catch (error) { console.warn('Cake music could not autoplay. Check the music file path and browser autoplay settings.', error); }
+});
+
+
+// Preloaded photo paths are injected from PRELOADED_CAKE_PHOTOS in the main HTML.
+const PRELOADED_PHOTOS = ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png",
+"13.png", "14.png"];
+
+
+const host = document.getElementById('scene');
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#ffdce8');
+scene.fog = new THREE.Fog('#ffdce8', 17, 32);
+
+const camera = new THREE.PerspectiveCamera(
+  34,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100
+);
+camera.position.set(0, 3.2, 15.8);
+camera.lookAt(0, 2.6, 0);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: false
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.25;
+host.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xfff1f7, 0xb56b87, 2.2));
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+keyLight.position.set(-5, 10, 7);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+keyLight.shadow.camera.left = -12;
+keyLight.shadow.camera.right = 12;
+keyLight.shadow.camera.top = 12;
+keyLight.shadow.camera.bottom = -12;
+scene.add(keyLight);
+
+const pinkLight = new THREE.PointLight(0xff82ba, 70, 22);
+pinkLight.position.set(4, 5, 4);
+scene.add(pinkLight);
+
+const fillLight = new THREE.PointLight(0xffe6f0, 45, 20);
+fillLight.position.set(-5, 5, 3);
+scene.add(fillLight);
+
+const mat = (color, roughness = 0.42, metalness = 0) =>
+  new THREE.MeshStandardMaterial({
+    color,
+    roughness,
+    metalness
+  });
+
+const cakePink = mat('#fa8db8', 0.28);
+const cakeSidePink = mat('#f67eac', 0.3);
+const icingPink = mat('#ffc1d9', 0.22);
+const icingHighlight = mat('#ffe0ec', 0.2);
+const darkPink = mat('#c94f83', 0.32);
+const cream = mat('#fff0e9', 0.28);
+const chocolate = mat('#633448', 0.29);
+const chocolateLight = mat('#8b5260', 0.26);
+const orange = mat('#ff9b48', 0.26);
+const yellow = mat('#ffce77', 0.28);
+const stickMat = mat('#fff2d6', 0.4);
+const pedestalMat = mat('#f5dce5', 0.25, 0.12);
+const pedestalDark = mat('#b98b9e', 0.25, 0.22);
+
+const display = new THREE.Group();
+scene.add(display);
+
+// Cake assembly origin.
+const cake = new THREE.Group();
+display.add(cake);
+
+// ---------- BASIC GEOMETRY ----------
+
+function cylinder(radiusTop, radiusBottom, height, material, x, y, z,
+                   segments = 96) {
+  const mesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      radiusTop,
+      radiusBottom,
+      height,
+      segments,
+      1,
+      false
+    ),
+    material
+  );
+
+  mesh.position.set(x, y, z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  cake.add(mesh);
+  return mesh;
+}
+
+function sphere(x, y, z, sx, sy, sz, material, parent = cake) {
+  const mesh = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 24),
+    material
+  );
+
+  mesh.position.set(x, y, z);
+  mesh.scale.set(sx, sy, sz);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+function torus(radius, tube, x, y, z, material, rx = Math.PI / 2) {
+  const mesh = new THREE.Mesh(
+    new THREE.TorusGeometry(radius, tube, 12, 96),
+    material
+  );
+
+  mesh.position.set(x, y, z);
+  mesh.rotation.x = rx;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  cake.add(mesh);
+  return mesh;
+}
+
+function box(w, h, d, material, parent = cake) {
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w, h, d),
+    material
+  );
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+
+// ---------- DISPLAY PEDESTAL ----------
+
+// Wide oval base.
+const base = cylinder(1.8, 1.92, 0.22, pedestalMat, 0, 0.28, 0);
+base.scale.z = 0.76;
+
+// Layered base rim.
+torus(1.76, 0.07, 0, 0.38, 0, cream);
+torus(1.82, 0.035, 0, 0.18, 0, pedestalDark);
+
+// Narrow pedestal stem.
+cylinder(0.48, 0.54, 0.95, pedestalMat, 0, 0.88, 0, 64);
+cylinder(0.54, 0.54, 0.10, cream, 0, 1.35, 0, 64);
+cylinder(0.58, 0.58, 0.12, pedestalDark, 0, 1.42, 0, 64);
+cylinder(0.58, 0.58, 0.07, cream, 0, 1.49, 0, 64);
+
+// Thin upper plate.
+cylinder(2.25, 2.25, 0.16, pedestalMat, 0, 1.58, 0);
+cylinder(2.28, 2.28, 0.07, cream, 0, 1.68, 0);
+torus(2.17, 0.045, 0, 1.69, 0, pedestalDark);
+
+// ---------- BOTTOM CAKE TIER ----------
+
+const bottomY = 2.45;
+const bottomH = 1.45;
+const bottomR = 1.82;
+
+cylinder(
+  bottomR, bottomR, bottomH,
+  cakeSidePink, 0, bottomY, 0
+);
+
+// Soft rounded cake edge.
+torus(1.78, 0.12, 0, bottomY + bottomH / 2 - 0.03, 0, cakePink);
+torus(1.77, 0.09, 0, bottomY - bottomH / 2 + 0.05, 0, cakePink);
+
+// Frosting top.
+cylinder(1.86, 1.82, 0.18, icingPink, 0, bottomY + bottomH / 2, 0);
+
+// ---------- DRIPPING FROSTING ----------
+
+function createDripRing(radius, topY, material, count, minLength, maxLength,
+                        phase = 0, width = 0.22, depth = 0.14) {
+  for (let i = 0; i < count; i++) {
+    const a = (i / count) * Math.PI * 2 + phase;
+    const length = minLength + Math.random() * (maxLength - minLength);
+    const r = radius + Math.sin(i * 2.31) * 0.035;
+
+    const x = Math.cos(a) * r;
+    const z = Math.sin(a) * r;
+
+    // Rounded drop starts at the icing edge.
+    const drop = sphere(
+      x,
+      topY - length * 0.46,
+      z,
+      width * (0.78 + Math.random() * 0.45),
+      length * 0.63,
+      depth,
+      material
+    );
+
+    drop.rotation.z = Math.sin(a) * 0.1;
+    drop.rotation.x = Math.cos(a) * 0.07;
+
+    // A little rounded bead at the end makes the drips look liquid.
+    sphere(
+      x,
+      topY - length * 0.83,
+      z,
+      width * 0.66,
+      width * 0.66,
+      depth * 0.86,
+      material
+    );
+  }
+}
+
+createDripRing(
+  1.83,
+  bottomY + bottomH / 2 + 0.09,
+  icingPink,
+  29,
+  0.15,
+  0.54,
+  0.08,
+  0.21,
+  0.17
+);
+
+// Thin icing band around the bottom tier.
+torus(1.83, 0.045, 0, bottomY - 0.47, 0, icingHighlight);
+
+// ---------- TOP CAKE TIER ----------
+
+const topY = 3.98;
+const topH = 1.18;
+const topR = 1.19;
+
+cylinder(topR, topR, topH, cakePink, 0, topY, 0);
+torus(1.16, 0.085, 0, topY + topH / 2 - 0.03, 0, cakePink);
+torus(1.16, 0.075, 0, topY - topH / 2 + 0.04, 0, cakePink);
+
+// Thick pale frosting cap.
+cylinder(
+  1.28, 1.20, 0.17,
+  icingPink, 0, topY + topH / 2, 0
+);
+
+torus(
+  1.24, 0.09,
+  0, topY + topH / 2 + 0.01,
+  0, icingHighlight
+);
+
+createDripRing(
+  1.21,
+  topY + topH / 2 + 0.10,
+  icingPink,
+  24,
+  0.12,
+  0.43,
+  0.18,
+  0.17,
+  0.13
+);
+
+// ---------- PIPED CREAM DETAILS ----------
+
+function creamRosette(x, y, z, scale = 1) {
+  sphere(x, y, z, 0.19 * scale, 0.12 * scale, 0.19 * scale, cream);
+
+  for (let i = 0; i < 6; i++) {
+    const a = i / 6 * Math.PI * 2;
+    sphere(
+      x + Math.cos(a) * 0.12 * scale,
+      y + 0.035 * scale,
+      z + Math.sin(a) * 0.12 * scale,
+      0.075 * scale,
+      0.085 * scale,
+      0.075 * scale,
+      icingHighlight
+    );
+  }
+}
+
+for (let i = 0; i < 10; i++) {
+  const a = i / 10 * Math.PI * 2;
+  creamRosette(
+    Math.cos(a) * 1.04,
+    topY + topH / 2 + 0.17,
+    Math.sin(a) * 1.04,
+    0.8
+  );
+}
+
+// Bottom tier cream accents.
+for (let i = 0; i < 13; i++) {
+  const a = i / 13 * Math.PI * 2;
+  creamRosette(
+    Math.cos(a) * 1.76,
+    bottomY + 0.61,
+    Math.sin(a) * 1.76,
+    0.52
+  );
+}
+
+// ---------- CHOCOLATE DECORATIONS ----------
+
+function chocolatePiece(x, y, z, sx, sy, sz, rot = 0) {
+  const piece = box(sx, sy, sz, chocolate);
+  piece.position.set(x, y, z);
+  piece.rotation.set(rot * 0.7, rot, rot * 0.4);
+
+  // Slightly lighter top surface.
+  const top = box(sx * 0.83, 0.025, sz * 0.83, chocolateLight);
+  top.position.set(x, y + sy / 2 + 0.015, z);
+  top.rotation.copy(piece.rotation);
+}
+
+chocolatePiece(-0.46, 4.83, 0.35, 0.30, 0.35, 0.22, -0.2);
+chocolatePiece(-0.08, 4.87, 0.18, 0.25, 0.28, 0.23, 0.28);
+chocolatePiece(0.31, 4.82, 0.35, 0.33, 0.24, 0.20, -0.15);
+chocolatePiece(0.62, 4.85, 0.12, 0.20, 0.32, 0.20, 0.3);
+
+// Chocolate curls.
+function chocolateCurl(x, y, z, scale = 1) {
+  const curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0.12, 0.12, 0),
+    new THREE.Vector3(0.2, 0.04, 0.03),
+    new THREE.Vector3(0.13, -0.04, 0.04),
+    new THREE.Vector3(0.02, 0.05, 0.02)
+  ]);
+
+  const mesh = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 24, 0.045, 8, false),
+    chocolate
+  );
+
+  mesh.position.set(x, y, z);
+  mesh.scale.setScalar(scale);
+  mesh.rotation.y = Math.random() * Math.PI;
+  cake.add(mesh);
+}
+
+chocolateCurl(-0.72, 4.88, 0.15, 1.1);
+chocolateCurl(0.52, 4.91, 0.4, 0.8);
+
+// ---------- CANDY STICKS AND LOLLIPOPS ----------
+
+function stick(x, yBottom, z, height, angle, material = stickMat) {
+  const mesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.035, 0.035, height, 16),
+    material
+  );
+
+  mesh.position.set(x, yBottom + height / 2, z);
+  mesh.rotation.z = angle;
+  mesh.castShadow = true;
+  cake.add(mesh);
+  return mesh;
+}
+
+function spiralLollipop(x, y, z, radius, colorA, colorB, angle = 0) {
+  const group = new THREE.Group();
+  group.position.set(x, y, z);
+  group.rotation.z = angle;
+  cake.add(group);
+
+  const stickMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.032, 0.032, 0.8, 16),
+    stickMat
+  );
+  stickMesh.position.y = -radius - 0.36;
+  group.add(stickMesh);
+
+  // Circular candy base.
+  const disc = new THREE.Mesh(
+    new THREE.CylinderGeometry(radius, radius, 0.12, 64),
+    colorA
+  );
+  disc.rotation.x = Math.PI / 2;
+  disc.position.z = 0;
+  group.add(disc);
+
+  // Spiral painted as a raised tube on the candy face.
+  const points = [];
+  const turns = 3.7;
+  const segments = 220;
+
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const a = t * turns * Math.PI * 2;
+    const r = radius * (0.06 + 0.87 * t);
+
+    points.push(
+      new THREE.Vector3(
+        Math.cos(a) * r,
+        Math.sin(a) * r,
+        0.085
+      )
+    );
+  }
+
+  const curve = new THREE.CatmullRomCurve3(points);
+
+  const spiral = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, segments, radius * 0.075, 8, false),
+    colorB
+  );
+
+  group.add(spiral);
+
+  // Point candy toward the camera, with a slight tilt.
+  group.rotation.y = 0.1;
+  group.rotation.x = -0.10;
+
+  return group;
+}
+
+// Upright striped candy sticks.
+stick(-0.93, 4.86, 0.10, 1.22, -0.22);
+stick(-0.56, 4.86, 0.22, 0.88, 0.18);
+stick(0.72, 4.85, 0.10, 1.08, -0.12);
+stick(1.02, 4.85, 0.12, 0.72, 0.24);
+
+// Spiral lollipops.
+spiralLollipop(-1.02, 6.18, 0.17, 0.34, orange, cream, -0.18);
+spiralLollipop(0.86, 6.06, 0.12, 0.34, orange, cream, 0.16);
+spiralLollipop(-0.45, 5.92, 0.37, 0.25, darkPink, icingHighlight, -0.2);
+spiralLollipop(0.42, 6.20, 0.20, 0.27, yellow, darkPink, 0.15);
+
+// Small decorative candy balls.
+[
+  [-0.84, 5.18, 0.70, orange],
+  [-0.50, 5.17, 0.82, yellow],
+  [0.10, 5.15, 0.80, darkPink],
+  [0.58, 5.19, 0.71, orange],
+  [0.91, 5.15, 0.51, yellow]
+].forEach(([x, y, z, material]) => {
+  sphere(x, y, z, 0.10, 0.10, 0.10, material);
+});
+
+// ---------- POLAROID PHOTO COLLAGE ----------
+
+const photoGroup = new THREE.Group();
+display.add(photoGroup);
+
+const photoFrames = [];
+const photoTextures = [];
+
+function makePlaceholderTexture(index) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 310;
+
+  const ctx = canvas.getContext('2d');
+
+  const palettes = [
+    ['#ffc3d7', '#d7789d'],
+    ['#f7d5c6', '#c9879b'],
+    ['#f9c9df', '#bd6c94'],
+    ['#ffe0c9', '#d18c91'],
+    ['#eacde6', '#a878a9'],
+    ['#f8c9ca', '#d87887']
+  ];
+
+  const [c1, c2] = palettes[index % palettes.length];
+
+  const grad = ctx.createLinearGradient(0, 0, 256, 310);
+  grad.addColorStop(0, c1);
+  grad.addColorStop(1, c2);
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 256, 310);
+
+  // Soft decorative backdrop.
+  ctx.fillStyle = 'rgba(255,255,255,0.17)';
+  ctx.beginPath();
+  ctx.arc(128, 125, 85, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Stylized placeholder portrait silhouette.
+  ctx.fillStyle = 'rgba(255,247,242,0.83)';
+  ctx.beginPath();
+  ctx.arc(128, 98, 37, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.ellipse(128, 220, 70, 83, 0, Math.PI, 0);
+  ctx.fill();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '17px Georgia';
+  ctx.textAlign = 'center';
+  ctx.fillText('sweet memories', 128, 282);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+function createPhoto(index, angle, radius, height, width, tilt, front) {
+  const group = new THREE.Group();
+  group.position.set(
+    Math.sin(angle) * radius,
+    height,
+    Math.cos(angle) * radius
+  );
+  group.rotation.y = angle;
+  group.rotation.z = tilt;
+  group.rotation.x = (Math.random() - 0.5) * 0.08;
+  photoGroup.add(group);
+
+  const photoHeight = width * 1.28;
+  const border = width * 0.075;
+  const bottomBorder = width * 0.25;
+
+  // Soft rose backing peeks out like a scrapbook paper layer.
+  const backing = new THREE.Mesh(
+    new THREE.BoxGeometry(width * 1.045, photoHeight * 1.035, 0.055),
+    mat(index % 3 === 0 ? '#e8a9bb' : index % 3 === 1 ? '#f2c7d1' : '#d993aa', 0.78)
+  );
+  backing.position.set(width * 0.025, -width * 0.018, -0.035);
+  backing.rotation.z = 0.025;
+  backing.castShadow = true;
+  group.add(backing);
+
+  // Warm ivory Polaroid frame with a gentle, clean finish.
+  const frame = new THREE.Mesh(
+    new THREE.BoxGeometry(width, photoHeight, 0.075),
+    mat('#fffaf3', 0.78)
+  );
+  frame.position.z = 0;
+  frame.castShadow = true;
+  frame.receiveShadow = true;
+  group.add(frame);
+
+  const texture = makePlaceholderTexture(index);
+  photoTextures.push(texture);
+  const imageW = width - border * 2;
+  const imageH = photoHeight - border - bottomBorder;
+  const image = new THREE.Mesh(
+    new THREE.PlaneGeometry(imageW, imageH),
+    new THREE.MeshBasicMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+      toneMapped: false
+    })
+  );
+  image.position.set(0, (bottomBorder - border) / 2 + width * 0.015, 0.041);
+  group.add(image);
+
+  // Small printed footer detail makes each frame feel like a keepsake.
+  const footerCanvas = document.createElement('canvas');
+  footerCanvas.width = 512;
+  footerCanvas.height = 128;
+  const ctx = footerCanvas.getContext('2d');
+  ctx.clearRect(0, 0, footerCanvas.width, footerCanvas.height);
+  ctx.fillStyle = '#b66f84';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'italic 38px Georgia';
+  ctx.fillText(index % 2 === 0 ? '♡ little moments ♡' : '♡ made with love ♡', 256, 64);
+  const footerTexture = new THREE.CanvasTexture(footerCanvas);
+  footerTexture.colorSpace = THREE.SRGBColorSpace;
+  const footer = new THREE.Mesh(
+    new THREE.PlaneGeometry(width * 0.82, width * 0.18),
+    new THREE.MeshBasicMaterial({ map: footerTexture, transparent: true, side: THREE.DoubleSide, depthWrite: false })
+  );
+  footer.position.set(0, -photoHeight / 2 + bottomBorder * 0.48, 0.042);
+  group.add(footer);
+
+  if (!front) group.rotation.y += Math.PI * 0.10;
+  photoFrames.push({ group, image, texture, index });
+  return group;
+}
+
+// Build enough Polaroid cards for every configured photo, with a minimum
+// decorative collage even when only a few photos are supplied.
+// The outer ring grows automatically when PRELOADED_PHOTOS has more than 16 items.
+const photoCount = Math.max(16, PRELOADED_PHOTOS.filter(src => typeof src === 'string' && src.trim()).length);
+for (let i = 0; i < photoCount; i++) {
+  const angle = (i / photoCount) * Math.PI * 2;
+  const row = i % 2;
+  // Give the outer cards more room so neighboring frames do not collide.
+  const radius = row === 0 ? 3.55 : 3.80;
+  const height = row === 0
+    ? 4.05 + Math.sin(i * 1.6) * 0.22
+    : 3.48 + Math.cos(i * 1.2) * 0.22;
+  const densityScale = Math.max(0.48, Math.min(0.82, 13 / photoCount));
+  const width = (row === 0 ? 0.86 : 0.82) * densityScale;
+  const tilt = (Math.random() - 0.5) * 0.24;
+  createPhoto(i, angle, radius, height, width, tilt, i % 2 === 0);
+}
+
+// A smaller front row adds depth without hiding the cake.
+for (let i = 0; i < 6; i++) {
+  const angle = (i / 6) * Math.PI * 2 + 0.18;
+  // Keep the smaller front row lower and closer to the cake, away from the outer frames.
+  const radius = 2.18 + Math.sin(i * 2.1) * 0.08;
+  const height = 2.55 + Math.sin(i * 1.6) * 0.18;
+  createPhoto(i + photoCount, angle, radius, height, 0.58, (Math.random() - 0.5) * 0.16, true);
+}
+
+// ---------- FLOOR AND SOFT SHADOW ----------
+
+const floorMat = new THREE.MeshStandardMaterial({
+  color: '#ffdce8',
+  roughness: 0.9
+});
+
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(200, 200),
+  floorMat
+);
+
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = 0.05;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// Soft decorative background circles.
+function backdropCircle(x, y, z, radius, color, opacity) {
+  const geometry = new THREE.CircleGeometry(radius, 64);
+  const material = new THREE.MeshBasicMaterial({
+    color,
+    transparent: true,
+    opacity,
+    depthWrite: false
+  });
+
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(x, y, z);
+  scene.add(mesh);
+}
+
+backdropCircle(-5.3, 5.3, -4, 1.6, '#fff2f7', 0.36);
+backdropCircle(5.5, 2.4, -4, 2.0, '#f8b9d0', 0.24);
+backdropCircle(-4.6, 1.3, -3, 0.8, '#ffffff', 0.30);
+
+// ---------- POSITION AND CAMERA ----------
+
+function layoutScene() {
+  const mobile = window.innerWidth < 700;
+
+  if (mobile) {
+    camera.fov = 38;
+    camera.position.set(0, 3.0, 17.5);
+    camera.lookAt(0, 3.1, 0);
+
+    display.position.set(1.15, -0.02, 0);
+    display.scale.setScalar(0.89);
+
+    // Keep the cake visible beneath the title.
+    photoGroup.scale.setScalar(0.98);
+  } else {
+    camera.fov = 32;
+    camera.position.set(0, 3.2, 15.8);
+    camera.lookAt(0, 3.05, 0);
+
+    display.position.set(2.55, 0.02, 0);
+    display.scale.setScalar(1.12);
+
+    photoGroup.scale.setScalar(1);
+  }
+
+  camera.updateProjectionMatrix();
+}
+
+layoutScene();
+
+// ---------- INTERACTION ----------
+
+let autoRotate = true;
+let dragging = false;
+let previousX = 0;
+let previousY = 0;
+let rotationVelocity = 0;
+
+renderer.domElement.style.cursor = 'grab';
+
+renderer.domElement.addEventListener('pointerdown', (event) => {
+  dragging = true;
+  previousX = event.clientX;
+  previousY = event.clientY;
+  renderer.domElement.setPointerCapture(event.pointerId);
+  renderer.domElement.style.cursor = 'grabbing';
+});
+
+renderer.domElement.addEventListener('pointermove', (event) => {
+  if (!dragging) return;
+
+  const dx = event.clientX - previousX;
+  const dy = event.clientY - previousY;
+
+  display.rotation.y += dx * 0.006;
+  display.rotation.x += dy * 0.002;
+  display.rotation.x = THREE.MathUtils.clamp(
+    display.rotation.x,
+    -0.22,
+    0.22
+  );
+
+  rotationVelocity = dx * 0.0007;
+
+  previousX = event.clientX;
+  previousY = event.clientY;
+});
+
+function stopDragging() {
+  dragging = false;
+  renderer.domElement.style.cursor = 'grab';
+}
+
+renderer.domElement.addEventListener('pointerup', stopDragging);
+renderer.domElement.addEventListener('pointercancel', stopDragging);
+
+renderer.domElement.addEventListener('wheel', (event) => {
+  event.preventDefault();
+
+  camera.position.z += event.deltaY * 0.005;
+  camera.position.z = THREE.MathUtils.clamp(
+    camera.position.z,
+    8.5,
+    22
+  );
+}, { passive: false });
+
+document.getElementById('rotateBtn').addEventListener('click', () => {
+  autoRotate = !autoRotate;
+
+  document.getElementById('rotateBtn').textContent =
+    autoRotate ? 'Pause rotation' : 'Start rotation';
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  display.rotation.set(0, 0, 0);
+  rotationVelocity = 0;
+  layoutScene();
+});
+
+// ---------- REPLACE PHOTOS WITH YOUR OWN ----------
+
+document.getElementById('photoInput').addEventListener('change', (event) => {
+  const files = [...event.target.files].filter(file =>
+    file.type.startsWith('image/')
+  );
+
+  files.forEach((file, i) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const image = new Image();
+
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 310;
+
+        const ctx = canvas.getContext('2d');
+
+        // Crop to fill the photo window.
+        const sourceRatio = image.width / image.height;
+        const targetRatio = canvas.width / canvas.height;
+
+        let sx = 0;
+        let sy = 0;
+        let sw = image.width;
+        let sh = image.height;
+
+        if (sourceRatio > targetRatio) {
+          sw = image.height * targetRatio;
+          sx = (image.width - sw) / 2;
+        } else {
+          sh = image.width / targetRatio;
+          sy = (image.height - sh) / 2;
+        }
+
+        ctx.drawImage(
+          image,
+          sx, sy, sw, sh,
+          0, 0, canvas.width, canvas.height
+        );
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.needsUpdate = true;
+
+        // Replace a placeholder photo, cycling through the collage.
+        const target = photoFrames[
+          (photoFrames.length - 1 - i + photoFrames.length) %
+          photoFrames.length
+        ];
+
+        target.image.material.map = texture;
+        target.image.material.needsUpdate = true;
+        target.texture = texture;
+      };
+
+      image.src = reader.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  event.target.value = '';
+});
+
+// Load photos configured in PRELOADED_PHOTOS automatically when the cake opens.
+function applyPhotoImage(image, index) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 310;
+  const ctx = canvas.getContext('2d');
+
+  // Crop to fill the photo window without stretching the image.
+  const sourceRatio = image.width / image.height;
+  const targetRatio = canvas.width / canvas.height;
+  let sx = 0, sy = 0, sw = image.width, sh = image.height;
+
+  if (sourceRatio > targetRatio) {
+    sw = image.height * targetRatio;
+    sx = (image.width - sw) / 2;
+  } else {
+    sh = image.width / targetRatio;
+    sy = (image.height - sh) / 2;
+  }
+
+  ctx.drawImage(image, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+
+  const target = photoFrames[
+    (photoFrames.length - 1 - index + photoFrames.length) % photoFrames.length
+  ];
+  target.image.material.map = texture;
+  target.image.material.needsUpdate = true;
+  target.texture = texture;
+}
+
+PRELOADED_PHOTOS.filter(src => typeof src === 'string' && src.trim()).forEach((src, index) => {
+  const image = new Image();
+  const cleanSrc = src.trim().replace(/^\.\//, '');
+  const fileName = cleanSrc.split('/').pop();
+  const stem = fileName.replace(/\.(png|jpe?g|webp|gif)$/i, '');
+  const candidates = [...new Set([
+    cleanSrc,
+    cleanSrc.startsWith('photos/') ? fileName : 'photos/' + cleanSrc,
+    ...['png', 'jpg', 'jpeg', 'webp', 'gif'].flatMap(ext => [
+      stem + '.' + ext,
+      'photos/' + stem + '.' + ext
+    ])
+  ])];
+  let candidateIndex = 0;
+  const tryNextSource = () => {
+    if (candidateIndex >= candidates.length) {
+      console.warn('Could not load preloaded cake photo. Check the filename and photos folder:', src);
+      return;
+    }
+    image.src = candidates[candidateIndex++];
+  };
+  image.onload = () => applyPhotoImage(image, index);
+  image.onerror = tryNextSource;
+  tryNextSource();
+});
+
+// ---------- ANIMATION ----------
+
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const delta = Math.min(clock.getDelta(), 0.04);
+
+  if (autoRotate && !dragging) {
+    display.rotation.y += delta * 0.13;
+  }
+
+  if (!dragging && Math.abs(rotationVelocity) > 0.0001) {
+    display.rotation.y += rotationVelocity;
+    rotationVelocity *= 0.95;
+  }
+
+  // Tiny floating motion for a soft, dreamy presentation.
+  const t = clock.elapsedTime;
+  cake.position.y = Math.sin(t * 0.8) * 0.025;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  layoutScene();
+});
+</script>
+</body>
+</html>
